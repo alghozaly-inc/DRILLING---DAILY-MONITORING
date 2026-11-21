@@ -119,30 +119,34 @@
     ========================= */
 
     .logo-frame {
-      width: 104px;
-      height: 104px;
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      border-radius: 50%;
+  padding: 4px;
+  border-radius: 15px;
 
-      background: rgba(8, 30, 50, 0.8);
-      border: 1px solid rgba(34, 211, 238, 0.65);
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.4);
 
-      box-shadow:
-        0 0 12px rgba(34, 211, 238, 0.5),
-        0 0 35px rgba(0, 140, 255, 0.25);
+  box-shadow:
+    0 0 12px rgba(34, 211, 238, 0.2);
+}
 
-      animation: logoGlow 2s ease-in-out infinite alternate;
-    }
+.logo {
+  width: 100%;
+  height: 100%;
 
-    .logo {
-      width: 82px;
-      height: 82px;
-      object-fit: contain;
-    }
+  object-fit: contain;
+  object-position: center;
+
+  image-rendering: auto;
+  display: block;
+}
 
     /* =========================
        TEXT
