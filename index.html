@@ -31,65 +31,45 @@
     }
 
     /* HEADER */
-    .header {
-      height: 76px;
-      min-height: 76px;
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 8px 16px;
-      background: linear-gradient(135deg, #101e30, #081525);
-      border-bottom: 1px solid #164b78;
-      box-shadow: 0 3px 18px rgba(0, 153, 255, 0.15);
-      position: relative;
-      z-index: 2;
-    }
+    header {
+  padding: 16px;
+  background: #101e30;
+  border-bottom: 1px solid #1e3a5f;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 
-    .logo {
-      width: 56px;
-      height: 56px;
-      object-fit: contain;
-      border-radius: 10px;
-      filter: drop-shadow(0 0 7px rgba(0, 174, 255, 0.45));
-    }
+  position: relative;
+  z-index: 10;
+  animation: hideHeader 0.5s ease forwards;
+}
 
-    .header-text {
-      min-width: 0;
-    }
+@keyframes hideHeader {
+  0%, 70% {
+    opacity: 1;
+    height: 80px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    overflow: hidden;
+  }
 
-    .header-title {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: #f1f7ff;
-    }
+  100% {
+    opacity: 0;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 0;
+    overflow: hidden;
+  }
+}
 
-    .header-subtitle {
-      margin-top: 5px;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      color: #38bdf8;
-      font-weight: bold;
-    }
-
-    .status {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 10px;
-      color: #4ade80;
-      white-space: nowrap;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #4ade80;
-      box-shadow: 0 0 8px #4ade80;
-    }
+iframe {
+  width: 100%;
+  height: 100dvh;
+  border: none;
+  background: #07111f;
+  display: block;
+}
 
     /* APP CONTENT */
     .app-container {
