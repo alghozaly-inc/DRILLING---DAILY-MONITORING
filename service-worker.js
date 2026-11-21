@@ -1,4 +1,4 @@
-const CACHE_NAME = 'drilling-monitor-v10';
+const CACHE_NAME = 'drilling-monitor-v1.1';
 
 const APP_FILES = [
   './',
@@ -6,7 +6,6 @@ const APP_FILES = [
   './manifest.json',
   './drill-squad.png'
 ];
-
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
