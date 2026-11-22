@@ -476,6 +476,76 @@
     </div>
 
   </div>
+  
+<!-- JAVASCRIPT -->
+<script>
+
+// =========================
+// INTRO SCREEN
+// =========================
+
+(function () {
+
+  function startIntro() {
+
+    const intro = document.getElementById("introOverlay");
+
+    if (!intro) return;
+
+    // Hilangkan intro tanpa menunggu iframe selesai
+    setTimeout(function () {
+
+      intro.classList.add("hide");
+
+      setTimeout(function () {
+        intro.remove();
+      }, 700);
+
+    }, 2500);
+
+  }
+
+  // DOM siap, tidak perlu menunggu iframe
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      startIntro,
+      { once: true }
+    );
+  } else {
+    startIntro();
+  }
+
+})();
+
+
+// =========================
+// SERVICE WORKER
+// =========================
+
+if ("serviceWorker" in navigator) {
+
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(function (registration) {
+      console.log(
+        "Service Worker aktif:",
+        registration.scope
+      );
+    })
+    .catch(function (error) {
+      console.error(
+        "Service Worker Error:",
+        error
+      );
+    });
+
+}
+
+</script>
+
+</body>
+</html>
+
 
 </body>
 </html>
