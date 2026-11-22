@@ -1,4 +1,4 @@
-const CACHE_NAME = 'drilling-monitor-v2.7';
+const CACHE_NAME = 'drilling-monitor-v2.8';
 
 const APP_FILES = [
   './',
