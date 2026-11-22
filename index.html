@@ -477,43 +477,5 @@
 
   </div>
 
-  <!-- JAVASCRIPT -->
-  <script>
-
-    // INTRO HILANG SETELAH 2,5 DETIK
-    window.addEventListener("load", () => {
-
-      setTimeout(() => {
-
-        const intro = document.getElementById("introOverlay");
-
-        if (intro) {
-          intro.classList.add("hide");
-
-          setTimeout(() => {
-            intro.remove();
-          }, 700);
-        }
-
-      }, 2500);
-
-    });
-
-    // SERVICE WORKER
-    if ("serviceWorker" in navigator) {
-
-      window.addEventListener("load", () => {
-
-        navigator.serviceWorker.register("./service-worker.js")
-          .catch(error => {
-            console.error("Service Worker Error:", error);
-          });
-
-      });
-
-    }
-
-  </script>
-
 </body>
 </html>
