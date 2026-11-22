@@ -24,18 +24,18 @@
   ],
   "screenshots": [
   {
-    "src": "./screenshots/dashboard.png",
+    "src": "./screenshots/dashboard.jpg",
     "sizes": "1080x1920",
-    "type": "image/png",
+    "type": "image/jpeg",
     "form_factor": "narrow",
     "label": "Dashboard Monitoring"
   },
   {
-    "src": "./screenshots/data-unit.png",
+    "src": "./screenshots/data-unit.jpg",
     "sizes": "1080x1920",
-    "type": "image/png",
+    "type": "image/jpeg",
     "form_factor": "narrow",
     "label": "Data Drilling Unit"
   }
-  ]
+]
 }
