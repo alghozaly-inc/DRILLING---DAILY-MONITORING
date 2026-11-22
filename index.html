@@ -114,27 +114,29 @@
 }
 
 
-    /* =========================
-       LOGO
-    ========================= */
+    
+/* =========================
+   LOGO - 3D EMBOSS
+========================= */
 
-    .logo-frame {
-  width: 58px;
-  height: 58px;
+.logo-frame {
+  width: 110px;
+  height: 110px;
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 4px;
-  border-radius: 15px;
+  padding: 0;
 
-  background: rgba(34, 211, 238, 0.08);
-  border: 1px solid rgba(34, 211, 238, 0.4);
+  /* Hilangkan kotak logo */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 
-  box-shadow:
-    0 0 12px rgba(34, 211, 238, 0.2);
+  overflow: visible;
 }
 
 .logo {
@@ -144,10 +146,69 @@
   object-fit: contain;
   object-position: center;
 
-  image-rendering: auto;
   display: block;
   background: transparent;
+
+  /* Efek 3D emboss */
+  filter:
+    drop-shadow(0 2px 1px rgba(255, 255, 255, 0.35))
+    drop-shadow(0 4px 1px rgba(0, 120, 160, 0.65))
+    drop-shadow(0 7px 3px rgba(0, 0, 0, 0.65))
+    drop-shadow(0 0 9px rgba(34, 211, 238, 0.65))
+    drop-shadow(0 0 22px rgba(14, 165, 233, 0.35));
+
+  animation: logo3DGlow 2.5s ease-in-out infinite alternate;
 }
+
+/* =========================
+   LOGO 3D ANIMATION
+========================= */
+
+@keyframes logo3DGlow {
+  from {
+    filter:
+      drop-shadow(0 2px 1px rgba(255,255,255,0.25))
+      drop-shadow(0 4px 1px rgba(0,120,160,0.55))
+      drop-shadow(0 7px 3px rgba(0,0,0,0.55))
+      drop-shadow(0 0 8px rgba(34,211,238,0.45))
+      drop-shadow(0 0 15px rgba(14,165,233,0.2));
+  }
+
+  to {
+    filter:
+      drop-shadow(0 2px 2px rgba(255,255,255,0.5))
+      drop-shadow(0 5px 2px rgba(0,180,220,0.8))
+      drop-shadow(0 8px 4px rgba(0,0,0,0.7))
+      drop-shadow(0 0 14px rgba(34,211,238,0.85))
+      drop-shadow(0 0 28px rgba(14,165,233,0.5));
+  }
+}
+
+/* =========================
+   SMALL SCREEN
+========================= */
+
+@media (max-width: 380px) {
+  .intro-card {
+    max-width: 310px;
+    padding: 28px 18px 24px;
+  }
+
+  .logo-frame {
+    width: 100px;
+    height: 100px;
+  }
+
+  .logo {
+    width: 100%;
+    height: 100%;
+  }
+
+  .brand-name {
+    font-size: 22px;
+  }
+}
+
 
     /* =========================
        TEXT
