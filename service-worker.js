@@ -26,12 +26,34 @@ self.addEventListener('activate', event => {
   );
 });
 
+
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  if (url.origin === self.location.origin) {
+  // Hanya proses request dari GitHub Pages sendiri
+  if (url.origin !== self.location.origin) return;
+
+  // Navigasi halaman: utamakan versi jaringan
+  if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
+      fetch(event.request)
+        .catch(() => caches.match('./index.html'))
     );
+    return;
   }
+
+  // File statis: jaringan dahulu, lalu cache
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, copy);
+          });
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
 });
