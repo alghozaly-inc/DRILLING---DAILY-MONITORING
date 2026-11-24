@@ -684,6 +684,8 @@ window.addEventListener("message", async function(event) {
 
   const iframe = document.querySelector("iframe");
 
+  alert("TES 4: MULAI MENJALANKAN ENABLE PUSH");
+
   const success = await enablePushNotifications();
 
   if (iframe && event.source) {
