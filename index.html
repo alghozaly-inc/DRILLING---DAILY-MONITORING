@@ -609,29 +609,69 @@ try {
 
   const success = await enablePushNotifications();
 
-  alert("TES 6: HASIL PUSH = " + success);
+  
+<script>
+const PUSH_SERVER =
+  "https://drill-squad-notif.imamalghozaly.workers.dev";
 
-  iframe.contentWindow.postMessage({
-    type: "DRILL_SQUAD_PUSH_RESULT",
-    success: success
-  }, event.origin);
+// PERTAHANKAN VAPID PUBLIC KEY ASLI
+const VAPID_PUBLIC_KEY = "ISI_DENGAN_PUBLIC_KEY_ASLI";
 
-} catch (error) {
-  alert("ERROR PUSH: " + error.message);
-  console.error(error);
+// Konversi VAPID Public Key
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat(
+    (4 - base64String.length % 4) % 4
+  );
+
+  const base64 = (base64String + padding)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+
+  const rawData = atob(base64);
+
+  return Uint8Array.from(
+    [...rawData].map(char => char.charCodeAt(0))
+  );
 }
+
+// FUNGSI UTAMA PUSH NOTIFICATION
+async function enablePushNotifications() {
+  try {
+    if (
+      !("serviceWorker" in navigator) ||
+      !("PushManager" in window) ||
+      !("Notification" in window)
+    ) {
+      throw new Error(
+        "Browser tidak mendukung Push Notification."
+      );
+    }
+
+    if (Notification.permission === "denied") {
+      throw new Error(
+        "Izin notifikasi diblokir. Aktifkan melalui pengaturan browser."
+      );
+    }
+
+    // Meminta izin dari interaksi langsung pengguna
+    const permission =
+      await Notification.requestPermission();
+
     if (permission !== "granted") {
       throw new Error(
         "Izin notifikasi belum diberikan."
       );
     }
 
+    // Menunggu Service Worker aktif
     const registration =
       await navigator.serviceWorker.ready;
 
+    // Memeriksa subscription perangkat
     let subscription =
       await registration.pushManager.getSubscription();
 
+    // Membuat subscription baru jika belum ada
     if (!subscription) {
       subscription =
         await registration.pushManager.subscribe({
@@ -641,6 +681,7 @@ try {
         });
     }
 
+    // Mengirim subscription ke Cloudflare Worker
     const response = await fetch(
       PUSH_SERVER + "/api/subscribe",
       {
@@ -676,18 +717,105 @@ try {
   }
 }
 
-  
+// LAPISAN AKTIVASI SEMENTARA
+function showPushActivationPrompt(iframe, targetOrigin) {
+  const oldOverlay =
+    document.getElementById("pushActivationOverlay");
 
-</script>
+  if (oldOverlay) oldOverlay.remove();
 
-  <script>
-    
-alert("GITHUB INDEX TERBARU BERHASIL DIMUAT");
-window.addEventListener("message", async function(event) {
+  const overlay = document.createElement("div");
+  overlay.id = "pushActivationOverlay";
 
-  alert("TES 3A: GITHUB MENERIMA PESAN");
+  overlay.style.cssText = `
+    position:fixed;
+    inset:0;
+    z-index:999999;
+    background:rgba(0,0,0,.85);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      background:#111827;
+      color:white;
+      padding:25px;
+      border-radius:16px;
+      max-width:340px;
+      width:100%;
+      text-align:center;
+      font-family:Arial,sans-serif;
+    ">
+      <div style="font-size:38px;margin-bottom:12px;">
+        🔔
+      </div>
+
+      <h3>DRILL SQUAD NOTIFICATION</h3>
+
+      <p style="font-size:14px;color:#cbd5e1;">
+        Aktifkan notifikasi agar mendapatkan pembaruan maintenance.
+      </p>
+
+      <button id="confirmPushActivation" style="
+        width:100%;
+        padding:14px;
+        border:0;
+        border-radius:10px;
+        background:#06b6d4;
+        color:#00111a;
+        font-weight:bold;
+      ">
+        AKTIFKAN NOTIFIKASI
+      </button>
+
+      <button id="cancelPushActivation" style="
+        margin-top:12px;
+        background:transparent;
+        color:#cbd5e1;
+        border:0;
+        padding:10px;
+      ">
+        BATAL
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  document
+    .getElementById("cancelPushActivation")
+    .addEventListener("click", function() {
+      overlay.remove();
+    });
+
+  document
+    .getElementById("confirmPushActivation")
+    .addEventListener("click", async function() {
+
+      this.disabled = true;
+      this.textContent = "MEMPROSES...";
+
+      const success =
+        await enablePushNotifications();
+
+      overlay.remove();
+
+      iframe.contentWindow.postMessage({
+        type: "DRILL_SQUAD_PUSH_RESULT",
+        success: success
+      }, targetOrigin);
+
+    });
+}
+
+// KOMUNIKASI DENGAN APPS SCRIPT
+window.addEventListener("message", function(event) {
 
   const iframe = document.querySelector("iframe");
+
   if (!iframe || event.source !== iframe.contentWindow) {
     return;
   }
@@ -701,19 +829,11 @@ window.addEventListener("message", async function(event) {
   if (!allowedOrigin) return;
 
   if (event.data?.type === "DRILL_SQUAD_ENABLE_PUSH") {
-
-  alert("TES 3: PESAN DITERIMA HALAMAN GITHUB");
-
-  const success = await enablePushNotifications();
-    iframe.contentWindow.postMessage({
-      type: "DRILL_SQUAD_PUSH_RESULT",
-      success: success
-    }, event.origin);
-
+    showPushActivationPrompt(iframe, event.origin);
   }
 
 });
 </script>
-  
+
 </body>
 </html>
