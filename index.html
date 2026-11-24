@@ -435,28 +435,56 @@
 
     .push-button {
   position: fixed;
-  top: 16px;
-  right: 14px;
+  bottom: 22px;
+  right: 18px;
+  top: auto;
+  left: auto;
   z-index: 999998;
 
-  width: 42px;
-  height: 42px;
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px;
+  min-height: 54px;
+  padding: 0 !important;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(34, 211, 238, 0.65);
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
 
-  background: rgba(7, 17, 31, 0.95);
-  color: #67e8f9;
+  background:
+    radial-gradient(circle at 30% 25%,
+      #294765 0%,
+      #10243b 45%,
+      #050d19 100%);
 
-  font-size: 20px;
-  cursor: pointer;
+  border: 2px solid #4ccde8;
 
-  box-shadow: 0 0 14px rgba(34, 211, 238, 0.3);
-    }
+  color: #ffd76a;
+  font-size: 27px;
+  line-height: 1;
+
+  box-shadow:
+    0 0 0 3px rgba(34, 211, 238, 0.12),
+    0 0 15px rgba(34, 211, 238, 0.35),
+    inset 2px 3px 5px rgba(255,255,255,0.25),
+    inset -3px -4px 7px rgba(0,0,0,0.75),
+    0 6px 0 #06101c,
+    0 9px 15px rgba(0,0,0,0.55);
+
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+
+  transition: box-shadow 0.2s ease;
+}
+
+.push-button:active {
+  transform: scale(0.94);
+}
   </style>
 </head>
 
