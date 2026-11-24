@@ -432,6 +432,31 @@
         animation-iteration-count: 1 !important;
       }
     }
+
+    .push-button {
+  position: fixed;
+  top: 16px;
+  right: 14px;
+  z-index: 999998;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(34, 211, 238, 0.65);
+  border-radius: 50%;
+
+  background: rgba(7, 17, 31, 0.95);
+  color: #67e8f9;
+
+  font-size: 20px;
+  cursor: pointer;
+
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.3);
+    }
   </style>
 </head>
 
@@ -554,7 +579,118 @@ if ("serviceWorker" in navigator) {
 
 }
 
-</script>
+  
+// =========================
+// DRILL SQUAD PUSH NOTIFICATION
+// =========================
 
+const PUSH_SERVER =
+  "https://drill-squad-notif.imamalghozaly.workers.dev";
+
+const VAPID_PUBLIC_KEY =
+  "BPGbpWmcGCAat7uAjlwUXMSpZD2xGMFbRF4IWa3NO3_JCGSJ9BCi93p8Eu_TqgSKbbB1plx02WfsMqr7MqhigH8";
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat(
+    (4 - base64String.length % 4) % 4
+  );
+
+  const base64 = (base64String + padding)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+
+  const rawData = atob(base64);
+
+  return Uint8Array.from(
+    [...rawData].map(char => char.charCodeAt(0))
+  );
+}
+
+document.getElementById("enablePushBtn")
+  .addEventListener("click", async function () {
+
+    const button = this;
+
+    try {
+      if (!("serviceWorker" in navigator) ||
+          !("PushManager" in window) ||
+          !("Notification" in window)) {
+        throw new Error(
+          "Browser tidak mendukung Push Notification."
+        );
+      }
+
+      button.disabled = true;
+      button.textContent = "MEMPROSES...";
+
+      const permission =
+        await Notification.requestPermission();
+
+      if (permission !== "granted") {
+        throw new Error(
+          "Izin notifikasi belum diberikan."
+        );
+      }
+
+      const registration =
+        await navigator.serviceWorker.ready;
+
+      let subscription =
+        await registration.pushManager.getSubscription();
+
+      if (!subscription) {
+        subscription =
+          await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey:
+              urlBase64ToUint8Array(BPGbpWmcGCAat7uAjlwUXMSpZD2xGMFbRF4IWa3NO3_JCGSJ9BCi93p8Eu_TqgSKbbB1plx02WfsMqr7MqhigH8)
+          });
+      }
+
+      const response = await fetch(
+        PUSH_SERVER + "/api/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            subscription: subscription
+          })
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.message || "Gagal mendaftarkan perangkat."
+        );
+      }
+
+      button.textContent = "✓ NOTIFIKASI AKTIF";
+      button.style.color = "#4ade80";
+
+      alert(
+        "Perangkat berhasil didaftarkan untuk menerima notifikasi DRILL SQUAD."
+      );
+
+    } catch (error) {
+
+      console.error("Push Error:", error);
+
+      button.disabled = false;
+      button.textContent = "🔔 COBA AKTIFKAN LAGI";
+
+      alert(error.message);
+    }
+});
+  
+
+</script>
+<button id="enablePushBtn" class="push-button" aria-label="Aktifkan notifikasi">
+  🔔
+</button>
+  
 </body>
 </html>
