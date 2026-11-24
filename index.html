@@ -671,6 +671,16 @@ window.addEventListener("message", async function(event) {
   alert("TES 3A: GITHUB MENERIMA PESAN");
 
   const iframe = document.querySelector("iframe");
+
+  alert(
+    "TES SOURCE: " +
+    (event.source === iframe?.contentWindow)
+  );
+
+  alert("TES ORIGIN: " + event.origin);
+
+  alert("TES MESSAGE: " + event.data?.type);
+
   if (!iframe || event.source !== iframe.contentWindow) {
     return;
   }
@@ -681,22 +691,26 @@ window.addEventListener("message", async function(event) {
       new URL(event.origin).hostname
     );
 
+  alert("TES ALLOWED ORIGIN: " + allowedOrigin);
+
   if (!allowedOrigin) return;
 
   if (event.data?.type === "DRILL_SQUAD_ENABLE_PUSH") {
 
-  alert("TES 3B: FUNGSI PUSH AKAN DIPANGGIL");
+    alert("TES 3B: FUNGSI PUSH AKAN DIPANGGIL");
 
-  const success = await enablePushNotifications();
+    const success = await enablePushNotifications();
 
-  iframe.contentWindow.postMessage({
-    type: "DRILL_SQUAD_PUSH_RESULT",
-    success: success
-  }, event.origin);
+    iframe.contentWindow.postMessage({
+      type: "DRILL_SQUAD_PUSH_RESULT",
+      success: success
+    }, event.origin);
 
-}
+  }
+
 });
-</script>
+
+  </script>
   
 </body>
 </html>
