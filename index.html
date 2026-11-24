@@ -668,54 +668,30 @@ async function enablePushNotifications() {
 
 window.addEventListener("message", async function(event) {
 
-  const iframe = document.querySelector("iframe");
-
-  alert("TES A: PESAN MASUK KE GITHUB");
-
-  if (!iframe) {
-    alert("ERROR: IFRAME TIDAK DITEMUKAN");
-    return;
-  }
-
-  if (event.source !== iframe.contentWindow) {
-    alert("ERROR: SOURCE TIDAK COCOK");
-    return;
-  }
-
-  alert("SOURCE: BENAR");
-
-  alert("ORIGIN: " + event.origin);
-
-  alert("MESSAGE: " + event.data?.type);
-
   const allowedOrigin =
     event.origin === "https://script.google.com" ||
     /\.googleusercontent\.com$/.test(
       new URL(event.origin).hostname
     );
 
-  if (!allowedOrigin) {
-    alert("ERROR: ORIGIN DITOLAK");
-    return;
-  }
-
-  alert("ORIGIN: DITERIMA");
+  if (!allowedOrigin) return;
 
   if (event.data?.type !== "DRILL_SQUAD_ENABLE_PUSH") {
-    alert("ERROR: JENIS PESAN TIDAK COCOK");
     return;
   }
 
-  alert("TES 3B: SIAP MEMANGGIL PUSH");
+  alert("TES 3B: PESAN DITERIMA DARI APPS SCRIPT");
+
+  const iframe = document.querySelector("iframe");
 
   const success = await enablePushNotifications();
 
-  alert("HASIL PUSH: " + success);
-
-  iframe.contentWindow.postMessage({
-    type: "DRILL_SQUAD_PUSH_RESULT",
-    success: success
-  }, event.origin);
+  if (iframe && event.source) {
+    event.source.postMessage({
+      type: "DRILL_SQUAD_PUSH_RESULT",
+      success: success
+    }, event.origin);
+  }
 
 });
     
