@@ -685,16 +685,16 @@ window.addEventListener("message", async function(event) {
 
   if (event.data?.type === "DRILL_SQUAD_ENABLE_PUSH") {
 
-  alert("TES 3: PESAN DITERIMA HALAMAN GITHUB");
+  alert("TES 3B: FUNGSI PUSH AKAN DIPANGGIL");
 
   const success = await enablePushNotifications();
-    iframe.contentWindow.postMessage({
-      type: "DRILL_SQUAD_PUSH_RESULT",
-      success: success
-    }, event.origin);
 
-  }
+  iframe.contentWindow.postMessage({
+    type: "DRILL_SQUAD_PUSH_RESULT",
+    success: success
+  }, event.origin);
 
+}
 });
 </script>
   
