@@ -684,8 +684,9 @@ window.addEventListener("message", async function(event) {
 
   if (event.data?.type === "DRILL_SQUAD_ENABLE_PUSH") {
 
-    const success = await enablePushNotifications();
+  alert("TES 3: PESAN DITERIMA HALAMAN GITHUB");
 
+  const success = await enablePushNotifications();
     iframe.contentWindow.postMessage({
       type: "DRILL_SQUAD_PUSH_RESULT",
       success: success
