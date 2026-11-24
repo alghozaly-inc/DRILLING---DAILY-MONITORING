@@ -668,22 +668,25 @@ async function enablePushNotifications() {
 
 window.addEventListener("message", async function(event) {
 
-  alert("TES 3A: GITHUB MENERIMA PESAN");
-
   const iframe = document.querySelector("iframe");
 
-  alert(
-    "TES SOURCE: " +
-    (event.source === iframe?.contentWindow)
-  );
+  alert("TES A: PESAN MASUK KE GITHUB");
 
-  alert("TES ORIGIN: " + event.origin);
-
-  alert("TES MESSAGE: " + event.data?.type);
-
-  if (!iframe || event.source !== iframe.contentWindow) {
+  if (!iframe) {
+    alert("ERROR: IFRAME TIDAK DITEMUKAN");
     return;
   }
+
+  if (event.source !== iframe.contentWindow) {
+    alert("ERROR: SOURCE TIDAK COCOK");
+    return;
+  }
+
+  alert("SOURCE: BENAR");
+
+  alert("ORIGIN: " + event.origin);
+
+  alert("MESSAGE: " + event.data?.type);
 
   const allowedOrigin =
     event.origin === "https://script.google.com" ||
@@ -691,25 +694,31 @@ window.addEventListener("message", async function(event) {
       new URL(event.origin).hostname
     );
 
-  alert("TES ALLOWED ORIGIN: " + allowedOrigin);
-
-  if (!allowedOrigin) return;
-
-  if (event.data?.type === "DRILL_SQUAD_ENABLE_PUSH") {
-
-    alert("TES 3B: FUNGSI PUSH AKAN DIPANGGIL");
-
-    const success = await enablePushNotifications();
-
-    iframe.contentWindow.postMessage({
-      type: "DRILL_SQUAD_PUSH_RESULT",
-      success: success
-    }, event.origin);
-
+  if (!allowedOrigin) {
+    alert("ERROR: ORIGIN DITOLAK");
+    return;
   }
 
-});
+  alert("ORIGIN: DITERIMA");
 
+  if (event.data?.type !== "DRILL_SQUAD_ENABLE_PUSH") {
+    alert("ERROR: JENIS PESAN TIDAK COCOK");
+    return;
+  }
+
+  alert("TES 3B: SIAP MEMANGGIL PUSH");
+
+  const success = await enablePushNotifications();
+
+  alert("HASIL PUSH: " + success);
+
+  iframe.contentWindow.postMessage({
+    type: "DRILL_SQUAD_PUSH_RESULT",
+    success: success
+  }, event.origin);
+
+});
+    
   </script>
   
 </body>
