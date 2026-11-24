@@ -602,8 +602,24 @@ async function enablePushNotifications() {
       );
     }
 
-    const permission = await Notification.requestPermission();
+    alert("TES 4: MEMANGGIL FUNGSI PUSH");
 
+try {
+  alert("TES 5: STATUS FUNGSI = " + typeof enablePushNotifications);
+
+  const success = await enablePushNotifications();
+
+  alert("TES 6: HASIL PUSH = " + success);
+
+  iframe.contentWindow.postMessage({
+    type: "DRILL_SQUAD_PUSH_RESULT",
+    success: success
+  }, event.origin);
+
+} catch (error) {
+  alert("ERROR PUSH: " + error.message);
+  console.error(error);
+}
     if (permission !== "granted") {
       throw new Error(
         "Izin notifikasi belum diberikan."
