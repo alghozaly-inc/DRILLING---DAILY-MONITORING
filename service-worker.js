@@ -1,3 +1,4 @@
+
 const CACHE_NAME = 'drilling-monitor-v3.5';
 
 const APP_FILES = [
@@ -6,6 +7,10 @@ const APP_FILES = [
   './manifest.json',
   './drill-squad.png'
 ];
+
+// =========================
+// INSTALL
+// =========================
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -14,6 +19,9 @@ self.addEventListener('install', event => {
   );
 });
 
+// =========================
+// ACTIVATE
+// =========================
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -26,14 +34,14 @@ self.addEventListener('activate', event => {
   );
 });
 
-
+// =========================
+// FETCH & CACHE
+// =========================
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Hanya proses request dari GitHub Pages sendiri
   if (url.origin !== self.location.origin) return;
 
-  // Navigasi halaman: utamakan versi jaringan
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -42,7 +50,6 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // File statis: jaringan dahulu, lalu cache
   event.respondWith(
     fetch(event.request)
       .then(response => {
@@ -55,5 +62,70 @@ self.addEventListener('fetch', event => {
         return response;
       })
       .catch(() => caches.match(event.request))
+  );
+});
+
+// =========================
+// PUSH NOTIFICATION
+// =========================
+self.addEventListener('push', event => {
+  let data = {
+    title: 'DRILL SQUAD',
+    body: 'Ada informasi baru dari tim DRILL SQUAD.',
+    icon: './drill-squad.png',
+    url: './'
+  };
+
+  if (event.data) {
+    try {
+      data = { ...data, ...event.data.json() };
+    } catch (error) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: data.icon,
+    badge: data.badge || './drill-squad.png',
+    tag: data.tag || 'drill-squad-notification',
+    data: {
+      url: data.url || './'
+    },
+    vibrate: [200, 100, 200]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(
+      data.title || 'DRILL SQUAD',
+      options
+    )
+  );
+});
+
+// =========================
+// NOTIFICATION CLICK
+// =========================
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+
+  const targetUrl = new URL(
+    event.notification.data?.url || './',
+    self.location.origin
+  ).href;
+
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then(clientList => {
+      for (const client of clientList) {
+        if (client.url.startsWith(self.location.origin)) {
+          return client.focus().then(() => client.navigate(targetUrl));
+        }
+      }
+
+      return clients.openWindow(targetUrl);
+    })
   );
 });
