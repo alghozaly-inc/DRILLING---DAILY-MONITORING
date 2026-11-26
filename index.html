@@ -704,6 +704,33 @@ async function disablePushNotifications() {
 }
 
   
+// SINKRONISASI STATUS NOTIFIKASI
+async function syncPushNotificationStatus() {
+  try {
+    if (!("serviceWorker" in navigator)) return;
+
+    const registration = await navigator.serviceWorker.ready;
+
+    const subscription =
+      await registration.pushManager.getSubscription();
+
+    const iframe = document.querySelector("iframe");
+
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({
+        type: "DRILL_SQUAD_PUSH_STATUS",
+        active: !!subscription
+      }, "*");
+    }
+
+  } catch (error) {
+    console.error("Sync Push Status Error:", error);
+  }
+}
+
+// Periksa status saat aplikasi dibuka
+syncPushNotificationStatus();
+  
 
 </script>
 
