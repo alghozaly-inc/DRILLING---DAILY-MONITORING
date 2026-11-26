@@ -728,9 +728,10 @@ async function syncPushNotificationStatus() {
   }
 }
 
-// Periksa status saat aplikasi dibuka
-syncPushNotificationStatus();
-  
+// Periksa status setelah halaman selesai dimuat
+window.addEventListener("load", function() {
+  setTimeout(syncPushNotificationStatus, 1500);
+});  
 
 </script>
 
