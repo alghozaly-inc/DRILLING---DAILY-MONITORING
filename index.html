@@ -738,12 +738,17 @@ window.addEventListener("load", function() {
 
 
 window.addEventListener("message", async function(event) {
+  let allowedOrigin = false;
 
-  const allowedOrigin =
-    event.origin === "https://script.google.com" ||
-    /\.googleusercontent\.com$/.test(
-      new URL(event.origin).hostname
-    );
+  try {
+    const hostname = new URL(event.origin).hostname;
+
+    allowedOrigin =
+      event.origin === "https://script.google.com" ||
+      hostname.endsWith(".googleusercontent.com");
+  } catch (error) {
+    return;
+  }
 
   if (!allowedOrigin) return;
 
@@ -758,12 +763,15 @@ window.addEventListener("message", async function(event) {
 
   let success = false;
 
-  if (type === "DRILL_SQUAD_ENABLE_PUSH") {
-    success = await enablePushNotifications();
-  }
-
-  if (type === "DRILL_SQUAD_DISABLE_PUSH") {
-    success = await disablePushNotifications();
+  try {
+    if (type === "DRILL_SQUAD_ENABLE_PUSH") {
+      success = await enablePushNotifications();
+    } else {
+      success = await disablePushNotifications();
+    }
+  } catch (error) {
+    console.error("Push Message Error:", error);
+    success = false;
   }
 
   if (event.source) {
@@ -772,8 +780,7 @@ window.addEventListener("message", async function(event) {
       success: success
     }, event.origin);
   }
-});
-    
+});    
   </script>
   
 </body>
